@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TextField, Button } from "@mui/material";
+import { validateNombre, validateCedula, validateApellido, validateEdad, validateTelefono } from "../validations/validacionFormPersonas"
 
 interface RegistroFormProps {
   handleGuardarRegistro: () => void;
@@ -58,44 +59,17 @@ const RegistroForm: React.FC<RegistroFormProps> = ({
   const validateForm = () => {
     let isValid = true;
     const errors = {
-      nombre: "",
-      cedula: "",
-      apellido: "",
-      edad: "",
-      telefono: "",
+      nombre: validateNombre(formData.nombre),
+      cedula: validateCedula(formData.cedula),
+      apellido: validateApellido(formData.apellido),
+      edad: validateEdad(formData.edad),
+      telefono: validateTelefono(formData.telefono),
     };
-
-    if (!formData.nombre.trim()) {
+  
+    if (errors.nombre || errors.cedula || errors.apellido || errors.edad || errors.telefono) {
       isValid = false;
-      errors.nombre = "El nombre es requerido";
     }
-
-    if (!formData.cedula.trim()) {
-      isValid = false;
-      errors.cedula = "La cédula es requerida";
-    }
-
-    if (!formData.apellido.trim()) {
-      isValid = false;
-      errors.apellido = "El apellido es requerido";
-    }
-
-    if (!formData.edad.trim()) {
-      isValid = false;
-      errors.edad = "La edad es requerida";
-    } else if (isNaN(Number(formData.edad))) {
-      isValid = false;
-      errors.edad = "La edad debe ser un número";
-    }
-
-    if (!formData.telefono.trim()) {
-      isValid = false;
-      errors.telefono = "El teléfono es requerido";
-    } else if (!/^\d+$/.test(formData.telefono)) {
-      isValid = false;
-      errors.telefono = "El teléfono debe contener solo números";
-    }
-
+  
     setFormErrors(errors);
     return isValid;
   };
