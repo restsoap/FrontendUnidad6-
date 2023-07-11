@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import {
   TextField,
   Button,
@@ -7,6 +7,14 @@ import {
   FormControl,
   InputLabel
 } from "@mui/material";
+
+import {
+  validateNombre,
+  validateApellido,
+  validateConsultorio,
+  validateCorreo,
+  validateIdEspecialidad
+} from "../validations/validationsFormDoctores";
 
 interface Especialidad {
   id: number;
@@ -36,33 +44,51 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
     correo: "",
   });
 
-  const handleChange = (event: any) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
+  const [errores, setErrores] = useState<FormData>({
+    nombre: "",
+    apellido: "",
+    idespecialidad: "",
+    consultorio: "",
+    correo: "",
+  });
   
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (event: ChangeEvent<{ name?: string; value: unknown }>) => {
+    const { name, value } = event.target as HTMLInputElement;
+    if (name) {
+      setFormData({ ...formData, [name]: value as string });
+    }
   };
-   
-
+  
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    fetch("http://localhost:3000/api/doctores", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Respuesta del API:", data);
-        handleGuardarRegistro();
+    const erroresFormulario = {
+      nombre: validateNombre(formData.nombre),
+      apellido: validateApellido(formData.apellido),
+      idespecialidad: validateIdEspecialidad(formData.idespecialidad),
+      consultorio: validateConsultorio(formData.consultorio),
+      correo: validateCorreo(formData.correo),
+    };
+
+    setErrores(erroresFormulario);
+
+    if (Object.values(erroresFormulario).every(error => !error)) {
+      fetch("http://localhost:3000/api/doctores", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       })
-      .catch((error) => {
-        console.error("Error al enviar los datos:", error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Respuesta del API:", data);
+          handleGuardarRegistro();
+        })
+        .catch((error) => {
+          console.error("Error al enviar los datos:", error);
+        });
+    }
   };
 
   useEffect(() => {
@@ -87,6 +113,8 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           fullWidth
           margin="dense"
           required
+          error={!!errores.nombre}
+          helperText={errores.nombre}
         />
         <TextField
           name="apellido"
@@ -96,25 +124,27 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           fullWidth
           margin="dense"
           required
+          error={!!errores.apellido}
+          helperText={errores.apellido}
         />
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" required error={!!errores.idespecialidad}>
           <InputLabel id="idespecialidad-label">Especialidad</InputLabel>
           <Select
             labelId="idespecialidad-label"
             id="idespecialidad"
             name="idespecialidad"
             value={formData.idespecialidad}
-            onChange={handleChange}
             fullWidth
             margin="dense"
-            required
           >
+            <MenuItem value="">Seleccionar</MenuItem>
             {especialidades.map((especialidad) => (
               <MenuItem key={especialidad.id} value={especialidad.id}>
                 {especialidad.nombreEspecialidad}
               </MenuItem>
             ))}
           </Select>
+          {!!errores.idespecialidad && <div>{errores.idespecialidad}</div>}
         </FormControl>
         <TextField
           name="consultorio"
@@ -124,6 +154,8 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           fullWidth
           margin="dense"
           required
+          error={!!errores.consultorio}
+          helperText={errores.consultorio}
         />
         <TextField
           name="correo"
@@ -134,6 +166,8 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           required
           type="email"
           margin="dense"
+          error={!!errores.correo}
+          helperText={errores.correo}
         />
         <Button variant="contained" color="primary" type="submit">
           Registrar
@@ -143,4 +177,4 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
   );
 }
 
-export default DoctoresForm;       
+export default DoctoresForm;
