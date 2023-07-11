@@ -106,13 +106,15 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
     <div>
       <form onSubmit={handleSubmit}>
         <TextField
+          fullWidth
+          margin="dense"
           label="Cédula del Paciente"
           value={cedula}
           onChange={(event) => setCedula(event.target.value)}
           required
         />
 
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="dense">
           <InputLabel id="idespecialidad-label">Especialidad</InputLabel>
           <Select
             labelId="idespecialidad-label"
@@ -134,7 +136,7 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
           </Select>
         </FormControl>
 
-        <FormControl required>
+        <FormControl required fullWidth margin="dense">
           <InputLabel>Doctor</InputLabel>
           <Select
             value={doctor}
