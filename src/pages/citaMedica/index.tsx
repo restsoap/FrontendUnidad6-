@@ -141,16 +141,17 @@ function CitasPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {citas.map((cita) => (
-                <TableRow key={cita.id}>
-                  <TableCell>{cita.id}</TableCell>
-                  <TableCell>{cita.cedulaPaciente}</TableCell>
-                  <TableCell>
-                    {getNombreEspecialidad(cita.idEspecialidad)}
-                  </TableCell>
-                  <TableCell>{getNombreDoctor(cita.idDoctor)}</TableCell>
-                </TableRow>
-              ))}
+              {Array.isArray(citas) &&
+                citas.map((cita) => (
+                  <TableRow key={cita.id}>
+                    <TableCell>{cita.id}</TableCell>
+                    <TableCell>{cita.cedulaPaciente}</TableCell>
+                    <TableCell>
+                      {getNombreEspecialidad(cita.idEspecialidad)}
+                    </TableCell>
+                    <TableCell>{getNombreDoctor(cita.idDoctor)}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

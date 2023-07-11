@@ -104,16 +104,17 @@ function PersonasPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {personas.map((persona) => (
-                <TableRow key={persona.id}>
-                  <TableCell>{persona.id}</TableCell>
-                  <TableCell>{persona.nombre}</TableCell>
-                  <TableCell>{persona.cedula}</TableCell>
-                  <TableCell>{persona.apellido}</TableCell>
-                  <TableCell>{persona.edad}</TableCell>
-                  <TableCell>{persona.telefono}</TableCell>
-                </TableRow>
-              ))}
+              {Array.isArray(personas) &&
+                personas.map((persona) => (
+                  <TableRow key={persona.id}>
+                    <TableCell>{persona.id}</TableCell>
+                    <TableCell>{persona.nombre}</TableCell>
+                    <TableCell>{persona.cedula}</TableCell>
+                    <TableCell>{persona.apellido}</TableCell>
+                    <TableCell>{persona.edad}</TableCell>
+                    <TableCell>{persona.telefono}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
