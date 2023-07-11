@@ -5,7 +5,8 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
+  SelectChangeEvent,
 } from "@mui/material";
 
 import {
@@ -13,7 +14,6 @@ import {
   validateApellido,
   validateConsultorio,
   validateCorreo,
-  validateIdEspecialidad
 } from "../validations/validationsFormDoctores";
 
 interface Especialidad {
@@ -35,7 +35,6 @@ interface DoctoresFormProps {
 
 function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
   const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
-
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
     apellido: "",
@@ -44,35 +43,17 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
     correo: "",
   });
 
-  const [errores, setErrores] = useState<FormData>({
-    nombre: "",
-    apellido: "",
-    idespecialidad: "",
-    consultorio: "",
-    correo: "",
-  });
-  
-  const handleChange = (event: ChangeEvent<{ name?: string; value: unknown }>) => {
-    const { name, value } = event.target as HTMLInputElement;
-    if (name) {
-      setFormData({ ...formData, [name]: value as string });
-    }
-  };
-  
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const erroresFormulario = {
       nombre: validateNombre(formData.nombre),
       apellido: validateApellido(formData.apellido),
-      idespecialidad: validateIdEspecialidad(formData.idespecialidad),
       consultorio: validateConsultorio(formData.consultorio),
       correo: validateCorreo(formData.correo),
     };
 
-    setErrores(erroresFormulario);
-
-    if (Object.values(erroresFormulario).every(error => !error)) {
+    if (Object.values(erroresFormulario).every((error) => !error)) {
       fetch("http://localhost:3000/api/doctores", {
         method: "POST",
         headers: {
@@ -89,6 +70,16 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           console.error("Error al enviar los datos:", error);
         });
     }
+  };
+
+  const handleChange = (event: ChangeEvent<{ name?: string; value: unknown }>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name as keyof FormData]: value as string });
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name!]: value });
   };
 
   useEffect(() => {
@@ -113,8 +104,6 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           fullWidth
           margin="dense"
           required
-          error={!!errores.nombre}
-          helperText={errores.nombre}
         />
         <TextField
           name="apellido"
@@ -124,16 +113,15 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           fullWidth
           margin="dense"
           required
-          error={!!errores.apellido}
-          helperText={errores.apellido}
         />
-        <FormControl fullWidth margin="normal" required error={!!errores.idespecialidad}>
+        <FormControl fullWidth margin="normal" required>
           <InputLabel id="idespecialidad-label">Especialidad</InputLabel>
           <Select
             labelId="idespecialidad-label"
             id="idespecialidad"
             name="idespecialidad"
             value={formData.idespecialidad}
+            onChange={handleSelectChange}
             fullWidth
             margin="dense"
           >
@@ -144,7 +132,6 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
               </MenuItem>
             ))}
           </Select>
-          {!!errores.idespecialidad && <div>{errores.idespecialidad}</div>}
         </FormControl>
         <TextField
           name="consultorio"
@@ -154,8 +141,6 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           fullWidth
           margin="dense"
           required
-          error={!!errores.consultorio}
-          helperText={errores.consultorio}
         />
         <TextField
           name="correo"
@@ -166,8 +151,6 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
           required
           type="email"
           margin="dense"
-          error={!!errores.correo}
-          helperText={errores.correo}
         />
         <Button variant="contained" color="primary" type="submit">
           Registrar
