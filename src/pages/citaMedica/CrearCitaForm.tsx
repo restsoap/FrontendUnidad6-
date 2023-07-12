@@ -8,6 +8,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { validateCedula } from "../validations/validacionFormPersonas";
 
 interface Especialidad {
   id: number;
@@ -40,6 +41,16 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
   const handleChange = (event: SelectChangeEvent<{ value: unknown }>) => {
     setEspecialidad(event.target.value as number | "");
   };
+
+  const [formData, setFormData] = useState({
+    cedula: "",
+    idEspecialidad: "",
+    idDoctor: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    cedula: "",
+  });
 
   useEffect(() => {
     obtenerDoctores();
@@ -79,20 +90,18 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
     // Validar la cédula aquí o en el backend
 
     // Enviar los datos al API
+
     fetch("http://localhost:3000/api/citas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        cedulaPaciente: cedula,
-        idEspecialidad: especialidad,
-        idDoctor: doctor,
-      }),
+      body: JSON.stringify(formData),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("Respuesta del API:", data);
+        handleGuardarRegistro();
         // Realizar acciones adicionales después del envío
       })
       .catch((error) => {
@@ -111,7 +120,6 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
           label="Cédula del Paciente"
           value={cedula}
           onChange={(event) => setCedula(event.target.value)}
-          required
         />
 
         <FormControl fullWidth margin="dense">

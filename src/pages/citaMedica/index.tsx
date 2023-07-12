@@ -32,6 +32,8 @@ interface Doctor {
   apellido: string;
 }
 
+
+
 function CitasPage() {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
@@ -55,6 +57,7 @@ function CitasPage() {
   const handleGuardarRegistro = () => {
     setShowRegistroForm(false);
     obtenerDoctores();
+    obtenerCitas();
   };
 
   const obtenerCitas = () => {
