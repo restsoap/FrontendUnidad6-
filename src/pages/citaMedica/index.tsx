@@ -32,18 +32,22 @@ interface Doctor {
   apellido: string;
 }
 
-
-
 function CitasPage() {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
   const [doctores, setDoctores] = useState<Doctor[]>([]);
   const [showRegistroForm, setShowRegistroForm] = useState(false);
 
+  /**
+   * Muestra el formulario de registro de citas
+   */
   const handleShowRegistroForm = () => {
     setShowRegistroForm(true);
   };
 
+  /**
+   * Cierra el formulario de registro de citas
+   */
   const handleCloseRegistroForm = () => {
     setShowRegistroForm(false);
   };
@@ -54,12 +58,18 @@ function CitasPage() {
     obtenerDoctores();
   }, []);
 
+  /**
+   * Maneja el guardado del registro de citas
+   */
   const handleGuardarRegistro = () => {
     setShowRegistroForm(false);
     obtenerDoctores();
     obtenerCitas();
   };
 
+  /**
+   * Obtiene las citas desde la API
+   */
   const obtenerCitas = () => {
     fetch("http://localhost:3000/api/citas")
       .then((response) => response.json())
@@ -71,6 +81,9 @@ function CitasPage() {
       });
   };
 
+  /**
+   * Obtiene las especialidades desde la API
+   */
   const obtenerEspecialidades = () => {
     fetch("http://localhost:3000/api/especialidades")
       .then((response) => response.json())
@@ -82,6 +95,9 @@ function CitasPage() {
       });
   };
 
+  /**
+   * Obtiene los doctores desde la API
+   */
   const obtenerDoctores = () => {
     fetch("http://localhost:3000/api/doctores")
       .then((response) => response.json())
@@ -93,6 +109,11 @@ function CitasPage() {
       });
   };
 
+  /**
+   * Obtiene el nombre de la especialidad en base a su ID
+   * @param {number} idEspecialidad - ID de la especialidad
+   * @returns {string} - Nombre de la especialidad
+   */
   const getNombreEspecialidad = (idEspecialidad: number) => {
     const especialidad = especialidades.find(
       (especialidad) => especialidad.id === idEspecialidad
@@ -100,6 +121,11 @@ function CitasPage() {
     return especialidad ? especialidad.nombreEspecialidad : "";
   };
 
+  /**
+   * Obtiene el nombre completo del doctor en base a su ID
+   * @param {number} idDoctor - ID del doctor
+   * @returns {string} - Nombre completo del doctor
+   */
   const getNombreDoctor = (idDoctor: number) => {
     const doctor = doctores.find((doctor) => doctor.id === idDoctor);
     return doctor ? `${doctor.nombre} ${doctor.apellido}` : "";

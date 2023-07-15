@@ -51,16 +51,28 @@ function DoctoresForm({ handleGuardarRegistro }: DoctoresFormProps) {
     correo: "",
   });
 
+  /**
+   * Maneja el cambio en los campos del formulario
+   * @param {React.ChangeEvent<{ name?: string; value: unknown }>} event - Evento de cambio
+   */
   const handleChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name || ""]: value as string });
   };
 
+  /**
+   * Maneja el clic en los elementos del menú desplegable de especialidades
+   * @param {MouseEvent<HTMLLIElement>} event - Evento de clic
+   */
   const handleMenuItemClick = (event: MouseEvent<HTMLLIElement>) => {
     const value = event.currentTarget.getAttribute("data-value");
     setFormData({ ...formData, idespecialidad: value || "" });
   };
 
+  /**
+   * Maneja el envío del formulario
+   * @param {FormEvent<HTMLFormElement>} event - Evento de envío del formulario
+   */
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 

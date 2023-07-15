@@ -28,6 +28,10 @@ interface CrearCitaFormProps {
   handleGuardarRegistro: () => void;
 }
 
+/**
+ * Componente para el formulario de creación de citas
+ * @param {CrearCitaFormProps} handleGuardarRegistro - Función para manejar el guardado del registro
+ */
 function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
   const [cedula, setCedula] = useState("");
   //const [especialidad, setEspecialidad] = useState("");
@@ -38,6 +42,10 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
 
   const [error, setError] = useState("");
 
+  /**
+   * Maneja el cambio en el valor de la especialidad seleccionada
+   * @param {SelectChangeEvent<{ value: unknown }>} event - Evento de cambio
+   */
   const handleChange = (event: SelectChangeEvent<{ value: unknown }>) => {
     setEspecialidad(event.target.value as number | "");
   };
@@ -57,6 +65,9 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
     obtenerEspecialidades(); // Agregar esta línea
   }, [especialidad]);
 
+  /**
+   * Obtiene los doctores filtrados por especialidad desde la API
+   */
   const obtenerDoctores = () => {
     const url = especialidad
       ? `http://localhost:3000/api/doctores/especialidad/${especialidad}`
@@ -73,6 +84,9 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
       });
   };
 
+  /**
+   * Obtiene las especialidades desde la API
+   */
   const obtenerEspecialidades = () => {
     fetch("http://localhost:3000/api/especialidades")
       .then((response) => response.json())
@@ -84,6 +98,10 @@ function CrearCitaForm({ handleGuardarRegistro }: CrearCitaFormProps) {
       });
   };
 
+  /**
+   * Maneja el envío del formulario
+   * @param {React.FormEvent} event - Evento de formulario
+   */
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
